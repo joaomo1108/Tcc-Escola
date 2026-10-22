@@ -11,6 +11,14 @@ import {
   Phone,
   Calendar,
   ImagePlus,
+  ZoomIn,
+  ZoomOut,
+  RotateCw,
+  RotateCcw,
+  FlipHorizontal,
+  FlipVertical,
+  Maximize2,
+  Trash2,
 } from "lucide-react";
 import { addDonation, translateDonationError } from "../services/donations";
 
@@ -47,21 +55,45 @@ type FormData = {
 // O Firestore aceita no máximo 1 MB por documento. Uma foto de celular
 // passa fácil disso, então redimensionamos e comprimimos para JPEG.
 // Retorna null se mesmo assim ficar grande demais (a foto é opcional).
-function compressPhoto(dataUrl: string): Promise<string | null> {
+function compressPhoto(
+  dataUrl: string,
+  options: { zoom: number; rotation: number; flipX: boolean; flipY: boolean }
+): Promise<string | null> {
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
       const maxSide = 1000;
-      const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+      const zoom = options.zoom || 1;
+      const rotation = options.rotation || 0;
+      const rad = (rotation * Math.PI) / 180;
+      const flipX = options.flipX ? -1 : 1;
+      const flipY = options.flipY ? -1 : 1;
+
+      // Dimensões que a imagem ocupa DEPOIS de girar e aplicar o zoom.
+      const cos = Math.abs(Math.cos(rad));
+      const sin = Math.abs(Math.sin(rad));
+      const rotW = img.width * cos + img.height * sin;
+      const rotH = img.width * sin + img.height * cos;
+      const scale = Math.min(1, maxSide / Math.max(rotW * zoom, rotH * zoom));
+
       const canvas = document.createElement("canvas");
-      canvas.width = Math.max(1, Math.round(img.width * scale));
-      canvas.height = Math.max(1, Math.round(img.height * scale));
+      canvas.width = Math.max(1, Math.round(rotW * zoom * scale));
+      canvas.height = Math.max(1, Math.round(rotH * zoom * scale));
       const ctx = canvas.getContext("2d");
       if (!ctx) {
         resolve(null);
         return;
       }
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // Pinta o fundo de branco: com o zoom/rotação pode sobrar canto vazio.
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(rad);
+      ctx.scale(flipX * zoom * scale, flipY * zoom * scale);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
       const result = canvas.toDataURL("image/jpeg", 0.7);
       resolve(result.length < 900_000 ? result : null);
     };
@@ -79,6 +111,22 @@ export default function DonatePage({ onBack }: DonateProps) {
   const [photo, setPhoto] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Ajustes que o doador faz na foto antes de enviar.
+  const [ajustes, setAjustes] = useState({
+    zoom: 1,
+    rotation: 0,
+    flipX: false,
+    flipY: false,
+  });
+  const [editandoFoto, setEditandoFoto] = useState(false);
+
+  const alterarAjuste = (campo: string, valor: number | boolean) =>
+    setAjustes((atual) => ({ ...atual, [campo]: valor }));
+
+  /** Volta a foto ao estado original (sem zoom, giro ou espelhamento). */
+  const restaurarFoto = () =>
+    setAjustes({ zoom: 1, rotation: 0, flipX: false, flipY: false });
+
   const {
     register,
     handleSubmit,
@@ -88,7 +136,9 @@ export default function DonatePage({ onBack }: DonateProps) {
   const onSubmit = async (data: FormData) => {
     setSubmitError(null);
     try {
-      const savedPhoto = photo ? await compressPhoto(photo) : null;
+      const savedPhoto = photo
+        ? await compressPhoto(photo, ajustes)
+        : null;
       await addDonation({
         title: data.title,
         category: data.category,
@@ -185,34 +235,212 @@ export default function DonatePage({ onBack }: DonateProps) {
             <label className="block mb-2 text-sm font-medium" style={{ color: "#383939" }}>
               Foto do item <span style={{ color: "#5a6060", fontWeight: 400 }}>(opcional)</span>
             </label>
-            <label
-              className="flex flex-col items-center justify-center w-full h-36 rounded-2xl border-2 border-dashed cursor-pointer transition-colors"
-              style={{ borderColor: photo ? "#149C68" : "rgba(56,57,57,0.2)", backgroundColor: "#f7faf0" }}
-            >
-              {photo ? (
-                <img src={photo} alt="Pré-visualização" className="w-full h-full object-cover rounded-2xl" />
-              ) : (
+
+            {photo ? (
+              <div className="space-y-3">
+                {/* Área de visualização da foto escolhida */}
+                <div
+                  className="relative w-full rounded-2xl border-2 overflow-hidden flex items-center justify-center"
+                  style={{ height: editandoFoto ? "18rem" : "9rem", borderColor: "#149C68", backgroundColor: "#f7faf0" }}
+                >
+                  <img
+                    src={photo}
+                    alt="Pré-visualização da doação"
+                    className="max-w-full max-h-full transition-transform duration-150"
+                    style={{
+                      objectFit: "contain",
+                      transform: `scale(${ajustes.zoom}) rotate(${ajustes.rotation}deg) scaleX(${ajustes.flipX ? -1 : 1}) scaleY(${ajustes.flipY ? -1 : 1})`,
+                    }}
+                  />
+                </div>
+
+                {/* Controles do editor */}
+                {editandoFoto && (
+                  <div
+                    className="rounded-2xl p-4 space-y-4 border"
+                    style={{ backgroundColor: "#f7faf0", borderColor: "rgba(56,57,57,0.1)" }}
+                  >
+                    {/* Zoom */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-semibold flex items-center gap-1.5" style={{ color: "#383939" }}>
+                          <Maximize2 size={13} style={{ color: "#149C68" }} />
+                          Tamanho da imagem
+                        </span>
+                        <span className="text-xs font-semibold" style={{ color: "#0E7A50" }}>
+                          {Math.round(ajustes.zoom * 100)}%
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => alterarAjuste("zoom", Math.max(0.3, Math.round((ajustes.zoom - 0.1) * 10) / 10))}
+                          className="p-2 rounded-lg border bg-white transition-colors hover:bg-[#149C68]/10"
+                          style={{ borderColor: "rgba(56,57,57,0.15)" }}
+                          aria-label="Diminuir imagem"
+                        >
+                          <ZoomOut size={15} style={{ color: "#383939" }} />
+                        </button>
+                        <input
+                          type="range"
+                          min="0.3"
+                          max="3"
+                          step="0.05"
+                          value={ajustes.zoom}
+                          onChange={(e) => alterarAjuste("zoom", Number(e.target.value))}
+                          className="flex-1 accent-[#149C68]"
+                          aria-label="Tamanho da imagem"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => alterarAjuste("zoom", Math.min(3, Math.round((ajustes.zoom + 0.1) * 10) / 10))}
+                          className="p-2 rounded-lg border bg-white transition-colors hover:bg-[#149C68]/10"
+                          style={{ borderColor: "rgba(56,57,57,0.15)" }}
+                          aria-label="Aumentar imagem"
+                        >
+                          <ZoomIn size={15} style={{ color: "#383939" }} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Girar e espelhar */}
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => alterarAjuste("rotation", ajustes.rotation - 90)}
+                        className="flex-1 min-w-[7rem] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border bg-white text-xs font-semibold transition-colors hover:bg-[#149C68]/10"
+                        style={{ borderColor: "rgba(56,57,57,0.15)", color: "#383939" }}
+                      >
+                        <RotateCcw size={14} style={{ color: "#149C68" }} />
+                        Girar esquerda
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => alterarAjuste("rotation", ajustes.rotation + 90)}
+                        className="flex-1 min-w-[7rem] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border bg-white text-xs font-semibold transition-colors hover:bg-[#149C68]/10"
+                        style={{ borderColor: "rgba(56,57,57,0.15)", color: "#383939" }}
+                      >
+                        <RotateCw size={14} style={{ color: "#149C68" }} />
+                        Girar direita
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => alterarAjuste("flipX", !ajustes.flipX)}
+                        className="flex-1 min-w-[7rem] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-colors"
+                        style={{
+                          borderColor: ajustes.flipX ? "#149C68" : "rgba(56,57,57,0.15)",
+                          backgroundColor: ajustes.flipX ? "rgba(20,156,104,0.1)" : "#ffffff",
+                          color: "#383939",
+                        }}
+                      >
+                        <FlipHorizontal size={14} style={{ color: "#149C68" }} />
+                        Espelhar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => alterarAjuste("flipY", !ajustes.flipY)}
+                        className="flex-1 min-w-[7rem] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-colors"
+                        style={{
+                          borderColor: ajustes.flipY ? "#149C68" : "rgba(56,57,57,0.15)",
+                          backgroundColor: ajustes.flipY ? "rgba(20,156,104,0.1)" : "#ffffff",
+                          color: "#383939",
+                        }}
+                      >
+                        <FlipVertical size={14} style={{ color: "#149C68" }} />
+                        Virar
+                      </button>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 pt-1 border-t" style={{ borderColor: "rgba(56,57,57,0.1)" }}>
+                      <button
+                        type="button"
+                        onClick={restaurarFoto}
+                        className="flex-1 min-w-[7rem] px-3 py-2 rounded-lg border bg-white text-xs font-semibold transition-colors hover:bg-[#149C68]/10"
+                        style={{ borderColor: "rgba(56,57,57,0.15)", color: "#383939" }}
+                      >
+                        Restaurar original
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPhoto(null);
+                          restaurarFoto();
+                          setEditandoFoto(false);
+                        }}
+                        className="flex-1 min-w-[7rem] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border bg-white text-xs font-semibold transition-colors hover:bg-[#d4183d]/10"
+                        style={{ borderColor: "rgba(212,24,61,0.4)", color: "#B00E31" }}
+                      >
+                        <Trash2 size={13} />
+                        Remover foto
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Ações rápidas abaixo da foto */}
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditandoFoto((v) => !v)}
+                    className="flex-1 min-w-[8rem] px-3 py-2 rounded-lg text-xs font-semibold transition-colors"
+                    style={{ backgroundColor: "#0E7A50", color: "#FFFEDB" }}
+                  >
+                    {editandoFoto ? "Concluir ajustes" : "Ajustar imagem"}
+                  </button>
+                  <label
+                    className="flex-1 min-w-[8rem] px-3 py-2 rounded-lg border text-xs font-semibold text-center cursor-pointer transition-colors hover:bg-[#149C68]/10"
+                    style={{ borderColor: "rgba(56,57,57,0.15)", color: "#383939" }}
+                  >
+                    Trocar foto
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                          setPhoto(ev.target?.result as string);
+                          restaurarFoto();
+                        };
+                        reader.readAsDataURL(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
+            ) : (
+              <label
+                className="flex flex-col items-center justify-center w-full h-36 rounded-2xl border-2 border-dashed cursor-pointer transition-colors"
+                style={{ borderColor: "rgba(56,57,57,0.2)", backgroundColor: "#f7faf0" }}
+              >
                 <div className="text-center">
                   <ImagePlus size={28} className="mx-auto mb-2" style={{ color: "#149C68" }} />
                   <span className="text-sm" style={{ color: "#5a6060" }}>
                     Clique para escolher uma foto
                   </span>
                 </div>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
                     const reader = new FileReader();
-                    reader.onload = (ev) => setPhoto(ev.target?.result as string);
+                    reader.onload = (ev) => {
+                      setPhoto(ev.target?.result as string);
+                      restaurarFoto();
+                      setEditandoFoto(true);
+                    };
                     reader.readAsDataURL(file);
-                  }
-                }}
-              />
-            </label>
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+            )}
           </div>
 
           {/* Título */}
