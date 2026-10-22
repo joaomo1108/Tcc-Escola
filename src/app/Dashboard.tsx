@@ -321,7 +321,7 @@ export default function Dashboard({ onLogout, onDonate, userName }: DashboardPro
                         <img
                           src={donation.photo}
                           alt={donation.title || "Doação"}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                         />
                       ) : (
                         <Package size={22} style={{ color: "#149C68" }} />

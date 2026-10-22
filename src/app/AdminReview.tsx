@@ -132,10 +132,12 @@ function FichaDaDoacao({ doacao }: { doacao: DonationSubmission }) {
         style={{ borderColor: "rgba(56,57,57,0.2)", backgroundColor: "#f7faf0" }}
       >
         {doacao.photo ? (
+          // object-contain mostra a foto INTEIRA, do jeito que o doador
+          // ajustou — sem cortar as bordas (que é o que o object-cover fazia).
           <img
             src={doacao.photo}
             alt={`Foto de ${doacao.title || "doação"}`}
-            className="w-full h-full object-cover"
+            className="max-w-full max-h-full object-contain"
           />
         ) : (
           <>
@@ -547,7 +549,7 @@ export default function AdminReview({ onBack }: AdminReviewProps) {
                             style={{ backgroundColor: "#f7faf0" }}
                           >
                             {s.photo ? (
-                              <img src={s.photo} alt="" className="w-full h-full object-cover" />
+                              <img src={s.photo} alt="" className="w-full h-full object-contain" />
                             ) : (
                               <Package size={18} style={{ color: "#149C68" }} />
                             )}
