@@ -228,18 +228,15 @@ export default function Dashboard({ onLogout, onDonate, userName }: DashboardPro
               ),
               accent: "#38C958",
             },
-            { label: "Dias como doador", value: String(daysAsDonor), accent: "#AEE637" },
+            { label: "Dias como doador", value: String(daysAsDonor), accent: "#0E7A50" },
           ].map((card) => (
             <div
               key={card.label}
-              className="rounded-2xl p-5 border"
-              style={{
-                backgroundColor: "#ffffff",
-                borderColor: "rgba(56,57,57,0.1)",
-              }}
+              className="rounded-3xl p-5 border bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
+              style={{ borderColor: "rgba(56,57,57,0.08)" }}
             >
               <p
-                className="text-sm font-medium mb-1"
+                className="text-sm font-medium mb-2"
                 style={{ color: "#5a6060" }}
               >
                 {card.label}

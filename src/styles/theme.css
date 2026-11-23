@@ -21,7 +21,29 @@ body,
   height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   background-color: #FFFEDB;
+  color: #383939;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(20, 156, 104, 0.18);
+  color: #383939;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button, input, textarea, select {
+  font: inherit;
 }

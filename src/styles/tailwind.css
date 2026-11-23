@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+}
+
+@layer components {
+  .surface-card {
+    @apply bg-white border border-border rounded-3xl shadow-sm;
+  }
+}

@@ -126,51 +126,75 @@ export default function App({ onLogin, onRegister }: AppProps) {
       </header>
 
       <main>
-      <section className="max-w-6xl mx-auto px-6 pt-16 pb-24 lg:pt-24 lg:pb-28 grid lg:grid-cols-2 gap-12 items-center">
+      <section className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 60% at 70% 30%, rgba(20,156,104,0.10), transparent 60%), radial-gradient(ellipse 50% 50% at 10% 80%, rgba(174,230,55,0.12), transparent 55%)",
+          }}
+        />
+        <div className="relative max-w-6xl mx-auto px-6 pt-16 pb-24 lg:pt-24 lg:pb-28 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <span
-            className="inline-block text-xs font-semibold tracking-widest uppercase text-[#0E7A50] mb-4"
-            style={{ letterSpacing: "0.18em" }}
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-[#0E7A50] mb-5 px-3 py-1.5 rounded-full"
+            style={{ letterSpacing: "0.14em", backgroundColor: "rgba(20,156,104,0.10)" }}
           >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#149C68]" />
             Plataforma de Doações
           </span>
           <h1
-            className="text-5xl lg:text-6xl font-bold leading-tight text-[#383939] mb-6"
+            className="text-5xl lg:text-6xl font-bold leading-[1.1] text-[#383939] mb-6"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
             Bem-vindo ao{" "}
             <span className="text-[#149C68]">coração</span>{" "}
             da doação
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-md">
+          <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
             Cada doação é um ato de amor que transforma vidas. Junte-se à nossa
             comunidade de doadores e faça a diferença hoje.
           </p>
           <div className="flex flex-wrap gap-3">
             <button
               onClick={onLogin}
-              className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#0E7A50] text-white font-semibold hover:bg-[#149C68] transition-colors duration-200 shadow-md"
+              className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#0E7A50] text-white font-semibold hover:bg-[#149C68] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
               Quero ser doador
               <ArrowRight size={16} />
             </button>
             <button
               onClick={() => scrollTo("como-funciona")}
-              className="flex items-center gap-2 px-6 py-3 rounded-full border-2 border-[#383939]/20 text-[#383939] font-medium hover:border-[#149C68] hover:text-[#0E7A50] transition-colors duration-200"
+              className="flex items-center gap-2 px-7 py-3.5 rounded-full border-2 border-[#383939]/15 text-[#383939] font-medium hover:border-[#149C68] hover:text-[#0E7A50] hover:bg-white/60 transition-all duration-200"
             >
               Saiba mais
             </button>
+          </div>
+
+          <div className="mt-10 flex flex-wrap gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <CheckCircle size={16} className="text-[#149C68]" />
+              <span>Cadastro gratuito</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle size={16} className="text-[#149C68]" />
+              <span>Acompanhamento da doação</span>
+            </div>
           </div>
         </div>
 
         <div className="flex justify-center lg:justify-end">
           <div className="relative w-full max-w-sm">
             <div
+              className="absolute -inset-4 rounded-[2rem] bg-[#149C68]/5 blur-2xl pointer-events-none"
+              aria-hidden="true"
+            />
+            <div
               id="como-funciona"
-              className="rounded-3xl bg-[#383939] p-8 text-white shadow-2xl scroll-mt-24"
+              className="relative rounded-3xl bg-[#383939] p-8 text-white shadow-2xl scroll-mt-24"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-[#149C68] flex items-center justify-center">
+                <div className="w-11 h-11 rounded-2xl bg-[#149C68] flex items-center justify-center shadow-lg shadow-[#149C68]/30">
                   <Heart size={18} fill="white" />
                 </div>
                 <div>
@@ -212,7 +236,7 @@ export default function App({ onLogin, onRegister }: AppProps) {
                         </span>
                         {step.title}
                       </p>
-                      <p className="text-xs text-white/55 leading-relaxed mt-1">
+                      <p className="text-xs text-white/60 leading-relaxed mt-1">
                         {step.desc}
                       </p>
                     </div>
@@ -220,20 +244,21 @@ export default function App({ onLogin, onRegister }: AppProps) {
                 ))}
               </ol>
 
-              <div className="mt-6 rounded-2xl bg-white/8 p-4 border border-white/10">
+              <div className="mt-6 rounded-2xl bg-white/[0.06] p-4 border border-white/10">
                 <p className="text-xs text-white/60 mb-1">Depois da aprovação</p>
                 <p className="text-sm font-medium">
                   Você tem{" "}
-                  <span className="text-[#AEE637]">3 dias úteis</span> para
+                  <span className="text-[#AEE637] font-semibold">3 dias úteis</span> para
                   fazer a entrega.
                 </p>
               </div>
             </div>
-            <div className="absolute -bottom-4 -left-4 bg-[#AEE637] text-[#383939] rounded-2xl px-4 py-2 shadow-lg flex items-center gap-2">
+            <div className="absolute -bottom-4 -left-4 bg-[#AEE637] text-[#383939] rounded-2xl px-4 py-2.5 shadow-lg flex items-center gap-2">
               <CheckCircle size={14} />
               <span className="text-xs font-bold">100% seguro e gratuito</span>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
@@ -242,7 +267,7 @@ export default function App({ onLogin, onRegister }: AppProps) {
       </div>
 
       <section id="por-que-doar" className="max-w-6xl mx-auto px-6 py-20 scroll-mt-20">
-        <div className="mb-14">
+        <div className="mb-14 max-w-2xl">
           <span
             className="text-xs font-semibold tracking-widest uppercase text-[#0E7A50]"
             style={{ letterSpacing: "0.18em" }}
@@ -250,22 +275,25 @@ export default function App({ onLogin, onRegister }: AppProps) {
             Por que doar?
           </span>
           <h2
-            className="text-3xl lg:text-4xl font-bold text-[#383939] mt-2 max-w-lg"
+            className="text-3xl lg:text-4xl font-bold text-[#383939] mt-3 leading-tight"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
             Pequenas doações, grandes transformações
           </h2>
+          <p className="mt-4 text-muted-foreground leading-relaxed">
+            Um gesto simples pode mudar o dia — e a história — de outra pessoa.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {REASONS.map((card) => (
             <div
               key={card.title}
-              className="rounded-2xl bg-card border border-border p-6 hover:shadow-lg transition-shadow duration-300 group h-full flex flex-col"
+              className="rounded-3xl bg-card border border-border p-7 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full flex flex-col"
             >
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
-                style={{ backgroundColor: card.accent + "22" }}
+                className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
+                style={{ backgroundColor: card.accent + "1A" }}
               >
                 {card.icon}
               </div>
@@ -277,7 +305,7 @@ export default function App({ onLogin, onRegister }: AppProps) {
               </p>
               <button
                 onClick={onLogin}
-                className="mt-5 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all duration-200"
+                className="mt-6 text-sm font-semibold inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-200"
                 style={{ color: "#0E7A50" }}
               >
                 Quero doar <ArrowRight size={14} />
@@ -289,40 +317,54 @@ export default function App({ onLogin, onRegister }: AppProps) {
 
       <section
         id="participar"
-        className="mx-6 mb-20 rounded-3xl bg-[#383939] overflow-hidden scroll-mt-20"
+        className="max-w-6xl mx-auto px-6 mb-20 scroll-mt-20"
       >
-        <div className="max-w-6xl mx-auto px-8 py-16 flex flex-col md:flex-row items-center gap-10">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-4">
-              <Users size={18} className="text-[#AEE637]" />
-              <span
-                className="text-xs font-semibold tracking-widest uppercase text-[#AEE637]"
-                style={{ letterSpacing: "0.15em" }}
+        <div
+          className="relative rounded-[2rem] overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, #383939 0%, #2f4a3d 55%, #1f5a42 100%)",
+          }}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none opacity-40"
+            style={{
+              background:
+                "radial-gradient(circle at 85% 20%, rgba(174,230,55,0.25), transparent 35%), radial-gradient(circle at 15% 80%, rgba(56,201,88,0.18), transparent 30%)",
+            }}
+          />
+          <div className="relative px-8 py-14 md:px-12 md:py-16 flex flex-col md:flex-row items-center gap-10">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-4">
+                <Users size={18} className="text-[#AEE637]" />
+                <span
+                  className="text-xs font-semibold tracking-widest uppercase text-[#AEE637]"
+                  style={{ letterSpacing: "0.15em" }}
+                >
+                  Comunidade
+                </span>
+              </div>
+              <h2
+                className="text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight"
+                style={{ fontFamily: "'Fraunces', serif" }}
               >
-                Comunidade
-              </span>
+                Faça parte de algo{" "}
+                <span className="text-[#AEE637]">maior</span> que você
+              </h2>
+              <p className="text-white/70 leading-relaxed max-w-xl">
+                O Doe Fácil conecta quem tem para doar a quem precisa. Cada item
+                que você envia passa por uma análise e chega a pessoas reais da
+                sua cidade.
+              </p>
             </div>
-            <h2
-              className="text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight"
-              style={{ fontFamily: "'Fraunces', serif" }}
-            >
-              Faça parte de algo{" "}
-              <span className="text-[#38C958]">maior</span> que você
-            </h2>
-            <p className="text-white/60 leading-relaxed max-w-md">
-              O Doe Fácil conecta quem tem para doar a quem precisa. Cada item
-              que você envia passa por uma análise e chega a pessoas reais da
-              sua cidade.
-            </p>
-          </div>
-          <div className="shrink-0">
-            <button
-              onClick={onLogin}
-              className="flex items-center gap-3 px-8 py-4 rounded-full bg-[#0E7A50] hover:bg-[#149C68] text-white font-bold text-lg transition-colors duration-200 shadow-lg"
-            >
-              <Heart size={20} fill="white" />
-              Quero ser doador
-            </button>
+            <div className="shrink-0">
+              <button
+                onClick={onLogin}
+                className="flex items-center gap-3 px-8 py-4 rounded-full bg-[#AEE637] hover:bg-[#c5f05a] text-[#383939] font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              >
+                <Heart size={20} fill="#383939" />
+                Quero ser doador
+              </button>
+            </div>
           </div>
         </div>
       </section>
