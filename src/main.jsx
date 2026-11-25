@@ -179,7 +179,7 @@ function Main() {
         {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
       </button>
 
-      <AccessibilityPanel />
+      {!adminRoute && <AccessibilityPanel />}
     </>
   );
 }
