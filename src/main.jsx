@@ -7,6 +7,7 @@ import Dashboard from "./app/Dashboard";
 import DonatePage from "./app/Donate";
 import AdminReview from "./app/AdminReview";
 import AdminLogin from "./app/AdminLogin";
+import AccessibilityPanel from "./app/AccessibilityPanel";
 import { watchAuth, logoutUser } from "./services/auth";
 import { logoutAdmin } from "./services/adminAuth";
 import { ZoomIn, ZoomOut } from "lucide-react";
@@ -154,9 +155,15 @@ function Main() {
 
   return (
     <>
-      <div style={{ zoom }}>
+      <a href="#conteudo-principal" className="skip-link">
+        Pular para o conteúdo principal
+      </a>
+
+      <div id="conteudo-principal" style={{ zoom }}>
         {content}
       </div>
+
+      <AccessibilityPanel />
 
       {/* Controles de zoom global — afetam todas as páginas */}
       <div

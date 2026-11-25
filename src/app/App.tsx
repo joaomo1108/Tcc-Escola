@@ -144,7 +144,7 @@ export default function App({ onLogin, onRegister }: AppProps) {
             Plataforma de Doações
           </span>
           <h1
-            className="text-5xl lg:text-6xl font-bold leading-[1.1] text-[#383939] mb-6"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] text-[#383939] mb-6"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
             Bem-vindo ao{" "}

@@ -140,7 +140,7 @@ export default function Dashboard({ onLogout, onDonate, userName }: DashboardPro
     <div className="min-h-screen" style={{ backgroundColor: "#FFFEDB" }}>
       {/* Header */}
       <header
-        className="w-full px-6 py-4 flex items-center justify-between"
+        className="w-full px-6 py-4 flex items-center justify-between gap-3 flex-wrap"
         style={{ backgroundColor: "#383939" }}
       >
         <div className="flex items-center gap-3">
@@ -252,7 +252,7 @@ export default function Dashboard({ onLogout, onDonate, userName }: DashboardPro
         </div>
 
         {/* Minhas doações (salvas no Firestore) */}
-        <div className="mb-10">
+        <div className="mb-10" aria-live="polite">
           <div className="flex items-center gap-2 mb-6">
             <Package size={20} style={{ color: "#149C68" }} />
             <h2
@@ -466,7 +466,7 @@ export default function Dashboard({ onLogout, onDonate, userName }: DashboardPro
           </div>
 
           {/* Lista de comentários */}
-          <div className="space-y-4">
+          <div className="space-y-4" aria-live="polite">
             {loadingComments && (
               <p className="text-sm" style={{ color: "#5a6060" }}>
                 Carregando comentários…
