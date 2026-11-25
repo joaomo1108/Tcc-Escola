@@ -96,24 +96,6 @@ export function LoginPage({ onBack, onRegister, onLoginSuccess }) {
             </button>
           )}
           <div className="text-center space-y-3">
-            <div className="flex items-center justify-center gap-2">
-              <div
-                className="w-6 h-6 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: "#149C68" }}
-              >
-                <Heart size={11} fill="#AEE637" />
-              </div>
-              <span
-                style={{
-                  color: "#FFFEDB",
-                  fontFamily: "'Fraunces', serif",
-                  fontWeight: 700,
-                  fontSize: "0.95rem",
-                }}
-              >
-                Doe Fácil
-              </span>
-            </div>
             <div
               className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center shadow-lg"
               style={{ background: "linear-gradient(135deg, #149C68, #AEE637)" }}
