@@ -10,7 +10,7 @@ import AdminLogin from "./app/AdminLogin";
 import AccessibilityPanel from "./app/AccessibilityPanel";
 import { watchAuth, logoutUser } from "./services/auth";
 import { logoutAdmin } from "./services/adminAuth";
-import { ZoomIn, ZoomOut, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import "./styles/tailwind.css";
 import "./styles/fonts.css";
 import "./styles/theme.css";
@@ -36,7 +36,6 @@ function Main() {
     const saved = localStorage.getItem(PAGE_STORAGE_KEY);
     return saved || "home";
   });
-  const [zoom, setZoom] = useState(1);
   const [theme, setTheme] = useState("light");
   const [userName, setUserName] = useState("");
   const [authReady, setAuthReady] = useState(false);
@@ -83,11 +82,6 @@ function Main() {
     });
     return unsubscribe;
   }, [adminRoute]);
-
-  const increaseZoom = () =>
-    setZoom((z) => Math.min(2, Math.round((z + 0.1) * 10) / 10));
-  const decreaseZoom = () =>
-    setZoom((z) => Math.max(0.5, Math.round((z - 0.1) * 10) / 10));
 
   // Espera o Firebase responder antes de mostrar a tela, evitando
   // "piscar" a página inicial para quem já está logado.
@@ -171,13 +165,13 @@ function Main() {
         Pular para o conteúdo principal
       </a>
 
-      <div id="conteudo-principal" style={{ zoom }}>
+      <div id="conteudo-principal">
         {content}
       </div>
 
       <button
         onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
-        className="fixed bottom-16 right-4 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105"
+        className="fixed bottom-4 right-4 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105"
         style={{ backgroundColor: "#383939", color: "#AEE637", zIndex: 50 }}
         aria-label={theme === "dark" ? "Desativar modo noturno" : "Ativar modo noturno"}
         title={theme === "dark" ? "Desativar modo noturno" : "Ativar modo noturno"}
@@ -186,35 +180,6 @@ function Main() {
       </button>
 
       <AccessibilityPanel />
-
-      {/* Controles de zoom global — afetam todas as páginas */}
-      <div
-        className="fixed bottom-4 right-4 flex items-center gap-1 rounded-full shadow-lg px-2 py-1.5"
-        style={{ backgroundColor: "#383939", zIndex: 50 }}
-      >
-        <button
-          onClick={decreaseZoom}
-          className="p-2 rounded-full transition-colors hover:bg-white/10"
-          style={{ color: "#38C958" }}
-          aria-label="Diminuir zoom"
-        >
-          <ZoomOut size={18} />
-        </button>
-        <span
-          className="text-xs font-semibold w-12 text-center"
-          style={{ color: "#FFFEDB" }}
-        >
-          {Math.round(zoom * 100)}%
-        </span>
-        <button
-          onClick={increaseZoom}
-          className="p-2 rounded-full transition-colors hover:bg-white/10"
-          style={{ color: "#38C958" }}
-          aria-label="Aumentar zoom"
-        >
-          <ZoomIn size={18} />
-        </button>
-      </div>
     </>
   );
 }

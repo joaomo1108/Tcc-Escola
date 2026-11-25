@@ -199,15 +199,7 @@ button, input, textarea, select {
   letter-spacing: 0.01em;
 }
 
-[data-a11y-blind="true"] .text-xs {
-  font-size: 0.875rem !important;
-  line-height: 1.4rem !important;
-}
-
-[data-a11y-blind="true"] .text-sm {
-  font-size: 1rem !important;
-  line-height: 1.6rem !important;
-}
+/* Sem aumento forçado de letras no modo cego, conforme solicitado. */
 
 /* Indica que o texto pode ser lido ao passar o mouse */
 [data-a11y-blind="true"] main h1,

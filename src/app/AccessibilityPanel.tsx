@@ -139,7 +139,7 @@ export default function AccessibilityPanel() {
     <>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-32 right-4 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105"
+        className="fixed bottom-20 right-4 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105"
         style={{ backgroundColor: "#0E7A50", color: "#FFFEDB", zIndex: 60 }}
         aria-label={open ? "Fechar painel de acessibilidade" : "Abrir painel de acessibilidade"}
         aria-expanded={open}
@@ -153,7 +153,7 @@ export default function AccessibilityPanel() {
           id="a11y-panel"
           role="dialog"
           aria-label="Opções de acessibilidade"
-          className="fixed bottom-48 right-4 w-[min(22rem,calc(100vw-2rem))] rounded-3xl shadow-2xl border p-5"
+          className="fixed bottom-36 right-4 w-[min(22rem,calc(100vw-2rem))] rounded-3xl shadow-2xl border p-5"
           style={{
             backgroundColor: "var(--panel-bg, #ffffff)",
             color: "var(--panel-fg, #383939)",
