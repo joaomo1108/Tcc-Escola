@@ -17,21 +17,21 @@
 }
 
 [data-theme="dark"] {
-  --background: #18211d;
-  --foreground: #f2f5f0;
-  --card: #24302a;
-  --card-foreground: #f2f5f0;
+  --background: #141a17;
+  --foreground: #eef3ee;
+  --card: #1d2621;
+  --card-foreground: #eef3ee;
   --primary: #38C958;
-  --primary-foreground: #18211d;
+  --primary-foreground: #141a17;
   --secondary: #AEE637;
-  --secondary-foreground: #18211d;
-  --muted: #2d3a33;
-  --muted-foreground: #c6d2c8;
+  --secondary-foreground: #141a17;
+  --muted: #26312b;
+  --muted-foreground: #b8c7bc;
   --accent: #38C958;
-  --accent-foreground: #18211d;
-  --border: rgba(242, 245, 240, 0.14);
-  --panel-bg: #24302a;
-  --panel-fg: #f2f5f0;
+  --accent-foreground: #141a17;
+  --border: rgba(238, 243, 238, 0.12);
+  --panel-bg: #1d2621;
+  --panel-fg: #eef3ee;
 }
 
 html,
@@ -121,7 +121,7 @@ button, input, textarea, select {
 
 [data-theme="dark"] [style*="background-color: rgba(255, 254, 219, 0.88)"],
 [data-theme="dark"] [style*="background-color: rgba(255,254,219,0.88)"] {
-  background-color: rgba(24, 33, 29, 0.9) !important;
+  background-color: rgba(20, 26, 23, 0.92) !important;
   color: var(--foreground) !important;
 }
 
@@ -136,7 +136,7 @@ button, input, textarea, select {
 [data-theme="dark"] [style*="background-color: rgb(247, 250, 240)"],
 [data-theme="dark"] [style*="background-color:#f7faf0"],
 [data-theme="dark"] [style*="background-color: #f7faf0"] {
-  background-color: #2d3a33 !important;
+  background-color: #26312b !important;
   color: var(--foreground) !important;
 }
 
@@ -164,47 +164,20 @@ button, input, textarea, select {
 [data-theme="dark"] input,
 [data-theme="dark"] textarea,
 [data-theme="dark"] select {
-  background-color: #2d3a33 !important;
-  color: #f2f5f0 !important;
-  border-color: rgba(242,245,240,0.18) !important;
+  background-color: #26312b !important;
+  color: #eef3ee !important;
+  border-color: rgba(238,243,238,0.16) !important;
 }
 [data-theme="dark"] input::placeholder,
 [data-theme="dark"] textarea::placeholder {
-  color: #b7c4bb !important;
+  color: #aebdad !important;
 }
 
 /* Painel de acessibilidade no modo escuro */
 [data-theme="dark"] #a11y-panel {
-  background-color: #24302a !important;
-  color: #f2f5f0 !important;
-  border-color: rgba(242,245,240,0.14) !important;
-}
-
-/* ---------------------- MODO SURDEZ ---------------------- */
-/* Comunicação visual reforçada: avisos, status e ações mais evidentes. */
-[data-a11y-deaf="true"] [role="alert"],
-[data-a11y-deaf="true"] .rounded-xl[style*="d4183d"],
-[data-a11y-deaf="true"] .rounded-xl[style*="ff8fa3"],
-[data-a11y-deaf="true"] .rounded-2xl[style*="d4183d"] {
-  border-width: 2px !important;
-  font-weight: 600 !important;
-}
-
-[data-a11y-deaf="true"] button,
-[data-a11y-deaf="true"] a,
-[data-a11y-deaf="true"] label {
-  text-decoration-thickness: 2px;
-}
-
-[data-a11y-deaf="true"] svg + span,
-[data-a11y-deaf="true"] span + svg {
-  margin-inline-start: 2px;
-}
-
-/* Ícones decorativos ganham mais presença junto ao texto */
-[data-a11y-deaf="true"] .inline-flex.items-center.gap-2,
-[data-a11y-deaf="true"] .flex.items-center.gap-2 {
-  gap: 0.6rem;
+  background-color: #1d2621 !important;
+  color: #eef3ee !important;
+  border-color: rgba(238,243,238,0.12) !important;
 }
 
 /* ---------------------- MODO CEGUEIRA / LEITOR DE TELA ---------------------- */
@@ -234,6 +207,17 @@ button, input, textarea, select {
 [data-a11y-blind="true"] .text-sm {
   font-size: 1rem !important;
   line-height: 1.6rem !important;
+}
+
+/* Indica que o texto pode ser lido ao passar o mouse */
+[data-a11y-blind="true"] main h1,
+[data-a11y-blind="true"] main h2,
+[data-a11y-blind="true"] main h3,
+[data-a11y-blind="true"] main p,
+[data-a11y-blind="true"] main li,
+[data-a11y-blind="true"] main label,
+[data-a11y-blind="true"] main button {
+  cursor: help;
 }
 
 /* ---------------------- TEXTO MAIOR ---------------------- */

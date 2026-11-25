@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Accessibility,
   Moon,
   Sun,
   Eye,
-  Ear,
   Volume2,
   X,
   Type,
@@ -13,37 +12,22 @@ import {
 
 type Prefs = {
   theme: "light" | "dark";
-  deaf: boolean;
   blind: boolean;
   font: "normal" | "large";
 };
 
-const STORAGE_KEY = "doe-facil:a11y";
-
 const DEFAULT_PREFS: Prefs = {
   theme: "light",
-  deaf: false,
   blind: false,
   font: "normal",
 };
 
-function loadPrefs(): Prefs {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_PREFS;
-    const parsed = JSON.parse(raw);
-    return { ...DEFAULT_PREFS, ...parsed };
-  } catch {
-    return DEFAULT_PREFS;
-  }
-}
-
 function applyPrefs(prefs: Prefs) {
   const root = document.documentElement;
   root.setAttribute("data-theme", prefs.theme);
-  root.setAttribute("data-a11y-deaf", prefs.deaf ? "true" : "false");
   root.setAttribute("data-a11y-blind", prefs.blind ? "true" : "false");
   root.setAttribute("data-font", prefs.font);
+  root.removeAttribute("data-a11y-deaf");
 
   // Evita transições presas (ex.: aba em segundo plano) após trocar tema/modo.
   try {
@@ -53,7 +37,19 @@ function applyPrefs(prefs: Prefs) {
   } catch {}
 }
 
-/** Lê em voz alta o conteúdo principal da página (apoio para cegueira/baixa visão). */
+/** Lê em voz alta um texto curto (apoio para cegueira/baixa visão). */
+function speakText(text: string) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (!clean) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(clean.slice(0, 500));
+  utter.lang = "pt-BR";
+  utter.rate = 1;
+  window.speechSynthesis.speak(utter);
+}
+
+/** Lê em voz alta o conteúdo principal da página. */
 function speakPage() {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) {
     alert("Seu navegador não suporta leitura por voz.");
@@ -78,27 +74,69 @@ function stopSpeak() {
   }
 }
 
+function getSpeakableText(el: HTMLElement | null): string {
+  if (!el) return "";
+  // Evita ler o painel de acessibilidade inteiro ao passar o mouse.
+  if (el.closest("#a11y-panel")) return "";
+  const target = el.closest(
+    "h1,h2,h3,h4,h5,h6,p,li,button,a,label,dt,dd,th,td,figcaption,legend"
+  ) as HTMLElement | null;
+  const node = target || el;
+  const text = (node.innerText || node.getAttribute("aria-label") || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (text.length < 2) return "";
+  return text.slice(0, 280);
+}
+
 export default function AccessibilityPanel() {
   const [open, setOpen] = useState(false);
   const [prefs, setPrefs] = useState<Prefs>(() => {
-    const p = loadPrefs();
-    // aplica no carregamento inicial
-    if (typeof document !== "undefined") applyPrefs(p);
-    return p;
+    // Sempre inicia desligado, conforme pedido do usuário.
+    if (typeof document !== "undefined") applyPrefs(DEFAULT_PREFS);
+    return DEFAULT_PREFS;
   });
+  const lastSpokenRef = useRef("");
 
   useEffect(() => {
     applyPrefs(prefs);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-    } catch {}
   }, [prefs]);
+
+  // Modo cego: ao passar o mouse (ou focar por teclado) em um texto, ele é lido.
+  useEffect(() => {
+    if (!prefs.blind) {
+      stopSpeak();
+      lastSpokenRef.current = "";
+      return;
+    }
+
+    let timer: number | undefined;
+    const handle = (event: Event) => {
+      const el = event.target as HTMLElement | null;
+      const text = getSpeakableText(el);
+      if (!text || text === lastSpokenRef.current) return;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        lastSpokenRef.current = text;
+        speakText(text);
+      }, 120);
+    };
+
+    document.addEventListener("mouseover", handle);
+    document.addEventListener("focusin", handle);
+    return () => {
+      window.clearTimeout(timer);
+      document.removeEventListener("mouseover", handle);
+      document.removeEventListener("focusin", handle);
+    };
+  }, [prefs.blind]);
 
   const update = (patch: Partial<Prefs>) =>
     setPrefs((current) => ({ ...current, ...patch }));
 
   const reset = () => {
     stopSpeak();
+    lastSpokenRef.current = "";
     setPrefs(DEFAULT_PREFS);
   };
 
@@ -158,17 +196,9 @@ export default function AccessibilityPanel() {
             />
 
             <ToggleRow
-              icon={<Ear size={16} />}
-              label="Modo para pessoas surdas"
-              description="Reforça avisos e informações com sinais visuais claros, ícones e texto, sem depender de áudio."
-              checked={prefs.deaf}
-              onChange={(v) => update({ deaf: v })}
-            />
-
-            <ToggleRow
               icon={<Eye size={16} />}
               label="Modo para pessoas cegas"
-              description="Melhora foco, contraste e navegação por teclado/leitor de tela. Inclui leitura por voz do conteúdo."
+              description="Melhora foco e leitura. Ao passar o mouse ou focar em um texto, o site lê em voz alta."
               checked={prefs.blind}
               onChange={(v) => update({ blind: v })}
             />
@@ -185,7 +215,7 @@ export default function AccessibilityPanel() {
           {prefs.blind && (
             <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(56,57,57,0.12)" }}>
               <p className="text-xs mb-2" style={{ color: "var(--muted-foreground, #5a6060)" }}>
-                Leitura por voz (apoio para cegueira/baixa visão):
+                Leitura por voz:
               </p>
               <div className="flex gap-2">
                 <button
@@ -203,6 +233,9 @@ export default function AccessibilityPanel() {
                   Parar
                 </button>
               </div>
+              <p className="text-[11px] mt-2" style={{ color: "var(--muted-foreground, #5a6060)" }}>
+                Dica: passe o mouse sobre um texto para ouvi-lo.
+              </p>
             </div>
           )}
 

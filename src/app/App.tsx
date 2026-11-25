@@ -167,19 +167,8 @@ export default function App({ onLogin, onRegister }: AppProps) {
               onClick={() => scrollTo("como-funciona")}
               className="flex items-center gap-2 px-7 py-3.5 rounded-full border-2 border-[#383939]/15 text-[#383939] font-medium hover:border-[#149C68] hover:text-[#0E7A50] hover:bg-white/60 transition-all duration-200"
             >
-              Saiba mais
+              Como funciona
             </button>
-          </div>
-
-          <div className="mt-10 flex flex-wrap gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <CheckCircle size={16} className="text-[#149C68]" />
-              <span>Cadastro gratuito</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle size={16} className="text-[#149C68]" />
-              <span>Acompanhamento da doação</span>
-            </div>
           </div>
         </div>
 
@@ -280,9 +269,6 @@ export default function App({ onLogin, onRegister }: AppProps) {
           >
             Pequenas doações, grandes transformações
           </h2>
-          <p className="mt-4 text-muted-foreground leading-relaxed">
-            Um gesto simples pode mudar o dia — e a história — de outra pessoa.
-          </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
