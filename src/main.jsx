@@ -10,7 +10,7 @@ import AdminLogin from "./app/AdminLogin";
 import AccessibilityPanel from "./app/AccessibilityPanel";
 import { watchAuth, logoutUser } from "./services/auth";
 import { logoutAdmin } from "./services/adminAuth";
-import { ZoomIn, ZoomOut } from "lucide-react";
+import { ZoomIn, ZoomOut, Moon, Sun } from "lucide-react";
 import "./styles/tailwind.css";
 import "./styles/fonts.css";
 import "./styles/theme.css";
@@ -37,6 +37,7 @@ function Main() {
     return saved || "home";
   });
   const [zoom, setZoom] = useState(1);
+  const [theme, setTheme] = useState("light");
   const [userName, setUserName] = useState("");
   const [authReady, setAuthReady] = useState(false);
 
@@ -45,6 +46,17 @@ function Main() {
     if (adminRoute) return; // o fluxo do /adm não usa a página lembrada
     localStorage.setItem(PAGE_STORAGE_KEY, page);
   }, [page, adminRoute]);
+
+  // Modo noturno separado da acessibilidade (sempre inicia desligado).
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    try {
+      document.getAnimations().forEach((a) => {
+        if (a instanceof CSSTransition) a.finish();
+      });
+    } catch {}
+  }, [theme]);
 
   // Ao abrir ou recarregar, o Firebase avisa se já existe alguém logado.
   // Se existir, restauramos o nome e mantemos a pessoa no painel.
@@ -162,6 +174,16 @@ function Main() {
       <div id="conteudo-principal" style={{ zoom }}>
         {content}
       </div>
+
+      <button
+        onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+        className="fixed bottom-16 right-4 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105"
+        style={{ backgroundColor: "#383939", color: "#AEE637", zIndex: 50 }}
+        aria-label={theme === "dark" ? "Desativar modo noturno" : "Ativar modo noturno"}
+        title={theme === "dark" ? "Desativar modo noturno" : "Ativar modo noturno"}
+      >
+        {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+      </button>
 
       <AccessibilityPanel />
 
