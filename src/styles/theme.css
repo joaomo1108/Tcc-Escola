@@ -220,6 +220,44 @@ button, input, textarea, select {
   font-size: 0.82rem;
 }
 
+/* ---------------------- ANIMAÇÕES ---------------------- */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.anim-fade-up {
+  opacity: 0;
+  animation: fade-up 0.7s cubic-bezier(.22,1,.36,1) forwards;
+}
+.anim-fade-in {
+  opacity: 0;
+  animation: fade-in 0.6s ease forwards;
+}
+.anim-float {
+  animation: float-soft 5s ease-in-out infinite;
+}
+.delay-1 { animation-delay: .1s; }
+.delay-2 { animation-delay: .2s; }
+.delay-3 { animation-delay: .3s; }
+.delay-4 { animation-delay: .4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up, .anim-fade-in, .anim-float {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* ---------------------- RESPONSIVIDADE ---------------------- */
 @media (max-width: 640px) {
   .max-w-6xl, .max-w-4xl, .max-w-2xl {

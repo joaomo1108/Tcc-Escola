@@ -137,25 +137,25 @@ export default function App({ onLogin, onRegister }: AppProps) {
         <div className="relative max-w-6xl mx-auto px-6 pt-16 pb-24 lg:pt-24 lg:pb-28 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <span
-            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-[#0E7A50] mb-5 px-3 py-1.5 rounded-full"
+            className="anim-fade-up inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-[#0E7A50] mb-5 px-3 py-1.5 rounded-full"
             style={{ letterSpacing: "0.14em", backgroundColor: "rgba(20,156,104,0.10)" }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#149C68]" />
             Plataforma de Doações
           </span>
           <h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] text-[#383939] mb-6"
+            className="anim-fade-up delay-1 text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] text-[#383939] mb-6"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
             Bem-vindo ao{" "}
             <span className="text-[#149C68]">coração</span>{" "}
             da doação
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
+          <p className="anim-fade-up delay-2 text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
             Cada doação é um ato de amor que transforma vidas. Junte-se à nossa
             comunidade de doadores e faça a diferença hoje.
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="anim-fade-up delay-3 flex flex-wrap gap-3">
             <button
               onClick={onLogin}
               className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#0E7A50] text-white font-semibold hover:bg-[#149C68] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
@@ -172,7 +172,7 @@ export default function App({ onLogin, onRegister }: AppProps) {
           </div>
         </div>
 
-        <div className="flex justify-center lg:justify-end">
+        <div className="anim-fade-up delay-2 flex justify-center lg:justify-end">
           <div className="relative w-full max-w-sm">
             <div
               className="absolute -inset-4 rounded-[2rem] bg-[#149C68]/5 blur-2xl pointer-events-none"
@@ -256,7 +256,7 @@ export default function App({ onLogin, onRegister }: AppProps) {
       </div>
 
       <section id="por-que-doar" className="max-w-6xl mx-auto px-6 py-20 scroll-mt-20">
-        <div className="mb-14 max-w-2xl">
+        <div className="anim-fade-up mb-14 max-w-2xl">
           <span
             className="text-xs font-semibold tracking-widest uppercase text-[#0E7A50]"
             style={{ letterSpacing: "0.18em" }}
@@ -272,10 +272,11 @@ export default function App({ onLogin, onRegister }: AppProps) {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {REASONS.map((card) => (
+          {REASONS.map((card, i) => (
             <div
               key={card.title}
-              className="rounded-3xl bg-card border border-border p-7 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full flex flex-col"
+              className="anim-fade-up rounded-3xl bg-card border border-border p-7 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full flex flex-col"
+              style={{ animationDelay: `${0.1 + i * 0.1}s` }}
             >
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
@@ -306,7 +307,7 @@ export default function App({ onLogin, onRegister }: AppProps) {
         className="max-w-6xl mx-auto px-6 mb-20 scroll-mt-20"
       >
         <div
-          className="relative rounded-[2rem] overflow-hidden"
+          className="anim-fade-up relative rounded-[2rem] overflow-hidden"
           style={{
             background: "linear-gradient(135deg, #383939 0%, #2f4a3d 55%, #1f5a42 100%)",
           }}
